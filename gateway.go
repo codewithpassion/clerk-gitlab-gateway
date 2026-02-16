@@ -49,11 +49,8 @@ func (g *Gateway) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 	}
 
 	q := r.URL.Query()
-	// Ensure openid scopes are included
-	scope := q.Get("scope")
-	if !strings.Contains(scope, "openid") {
-		q.Set("scope", "openid profile email")
-	}
+	// Set scopes required for userinfo (profile + email)
+	q.Set("scope", "openid profile email")
 	target.RawQuery = q.Encode()
 
 	log.Printf("authorize: redirecting to %s", target.String())
