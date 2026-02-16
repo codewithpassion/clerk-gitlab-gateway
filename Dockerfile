@@ -5,7 +5,9 @@ COPY go.mod ./
 COPY *.go ./
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o gateway .
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM alpine:3.21
+RUN adduser -D -u 65532 nonroot
 COPY --from=builder /build/gateway /gateway
+USER nonroot
 EXPOSE 8080
 ENTRYPOINT ["/gateway"]
