@@ -4,10 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
 )
+
+func logMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s %s %s", r.Method, r.URL.String(), r.RemoteAddr)
+		next.ServeHTTP(w, r)
+	})
+}
 
 type ClerkUserInfo struct {
 	Sub               string `json:"sub"`
@@ -48,6 +56,7 @@ func (g *Gateway) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 	}
 	target.RawQuery = q.Encode()
 
+	log.Printf("authorize: redirecting to %s", target.String())
 	http.Redirect(w, r, target.String(), http.StatusFound)
 }
 

@@ -32,7 +32,9 @@ func main() {
 		w.Write([]byte(`{"status":"ok"}`))
 	})
 
+	handler := logMiddleware(mux)
+
 	addr := fmt.Sprintf(":%s", port)
 	log.Printf("clerk-gitlab-gateway listening on %s", addr)
-	log.Fatal(http.ListenAndServe(addr, mux))
+	log.Fatal(http.ListenAndServe(addr, handler))
 }
