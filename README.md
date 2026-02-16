@@ -16,7 +16,7 @@ Browser → Mattermost → Gateway → Clerk
 
 ### Auth Flow
 
-1. User clicks "Login with Clerk" on Mattermost
+1. User clicks "Login with Claude Community Australia" on Mattermost
 2. Mattermost redirects to gateway `GET /oauth/authorize`
 3. Gateway redirects to Clerk `GET /oauth/authorize` (adding `scope=openid profile email`)
 4. User authenticates on Clerk
@@ -84,11 +84,32 @@ MM_GITLABSETTINGS_SECRET=<clerk-client-secret>
 MM_GITLABSETTINGS_AUTHENDPOINT=https://<gateway-domain>/oauth/authorize
 MM_GITLABSETTINGS_TOKENENDPOINT=https://<gateway-domain>/oauth/token
 MM_GITLABSETTINGS_USERAPIENDPOINT=https://<gateway-domain>/api/v4/user
-MM_GITLABSETTINGS_BUTTONTEXT=Login with Clerk
+MM_GITLABSETTINGS_BUTTONTEXT=Login with Claude Community Australia
 MM_GITLABSETTINGS_BUTTONCOLOR=#6C47FF
 ```
 
 Then restart Mattermost.
+
+### Custom Login Button Icon (Optional)
+
+Mattermost hardcodes the GitLab icon on the login button. To replace it with a custom icon, a small Mattermost webapp plugin is used.
+
+The plugin source is in `../mm-custom-login-plugin/`. It injects CSS that hides the GitLab SVG and replaces it with a "CC" (Claude Community) icon.
+
+To install:
+
+1. Enable plugins on Mattermost:
+   ```
+   MM_PLUGINSETTINGS_ENABLE=true
+   MM_PLUGINSETTINGS_ENABLEUPLOADS=true
+   ```
+2. Build the plugin:
+   ```bash
+   cd mm-custom-login-plugin/webapp && npm install && npm run build && cd ..
+   tar czf mm-custom-login-plugin.tar.gz plugin.json webapp/dist/main.js
+   ```
+3. Upload via **System Console** → **Plugin Management** → Upload Plugin
+4. Enable the plugin
 
 ## Current Deployment
 
